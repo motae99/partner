@@ -55,34 +55,34 @@ class Appointment extends \api\components\db\ActiveRecord
 
     public function Queue($model)
     {
-        $confirmed = Appointment::find()
-            ->where(['calender_id' => $model->calender_id])
-            ->andWhere(['status' => 'confirmed'])
-            // ->andWhere(['<', 'confirmed_at', $model->confirmed_at])
-            ->count();
+        // $confirmed = Appointment::find()
+        //     ->where(['calender_id' => $model->calender_id])
+        //     ->andWhere(['status' => 'confirmed'])
+        //     // ->andWhere(['<', 'confirmed_at', $model->confirmed_at])
+        //     ->count();
 
-        $booked = Appointment::find()
-            ->where(['calender_id' => $model->calender_id])
-            ->andWhere(['status' => 'booked'])
-            ->andWhere(['<=', 'created_at', $model->created_at])
-            ->count();
-        if ($model->status == 'booked') {
-            return $confirmed+$booked;
-        }
-        elseif($model->status == 'confirmed'){
-            $schedule = Schedule::find()
-            ->where(['appointment_id' => $model->id])
-            ->one();
+        // $booked = Appointment::find()
+        //     ->where(['calender_id' => $model->calender_id])
+        //     ->andWhere(['status' => 'booked'])
+        //     ->andWhere(['<=', 'created_at', $model->created_at])
+        //     ->count();
+        // if ($model->status == 'booked') {
+        //     return $confirmed+$booked;
+        // }
+        // elseif($model->status == 'confirmed'){
+        //     $schedule = Schedule::find()
+        //     ->where(['appointment_id' => $model->id])
+        //     ->one();
 
-            if ($schedule) {
-                return $schedule->queue;
-            }else{
-                return 0;
-            }
+        //     if ($schedule) {
+        //         return $schedule->queue;
+        //     }else{
+        //         return 0;
+        //     }
 
-        }
+        // }
 
-        // return 1;
+        return 1;
         
     }
 
