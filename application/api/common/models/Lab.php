@@ -39,6 +39,7 @@ class Lab extends \api\components\db\ActiveRecord
      public function extraFields() {
         return [
             'insurance' => function($model) { return $model->insurance; },
+            'test' => function($model) { return $model->test; },
         ];
     }
 
@@ -46,6 +47,11 @@ class Lab extends \api\components\db\ActiveRecord
     public function getInsurance()
     {
         return $this->hasMany(Labinsurance::className(), ['lab_id' => 'id']);
+    }
+
+    public function getTest()
+    {
+        return $this->hasMany(Labexam::className(), ['lab_id' => 'id']);
     }
 
 

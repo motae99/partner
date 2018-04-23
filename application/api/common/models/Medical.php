@@ -29,8 +29,9 @@ class Medical extends \api\components\db\ActiveRecord
             'manager',
             'info',
             'email',
-            'rate',
             'app_service',
+            'rate_count' => function($model) { return $model->count($model);},
+            'rate_total' => function($model) { return $model->total($model);},
             'photo' => function($model) { return '/img/clinics/'.$model->photo;},
             'start_time'=> function($model) { return $model->start; },
             'end_time'=> function($model) { return $model->end; },
@@ -42,9 +43,17 @@ class Medical extends \api\components\db\ActiveRecord
     public function extraFields() {
         return [
             'specialization' => function($model) { return $model->spec; },
-            'doctors' => function($model) { return $model->doctor; }
+            'doctors' => function($model) { return $model->doctor; },
+            'insurance' => function($model) { return $model->avail; },
+
             // 'items' => function($model) { return $model->item; }
         ];
+    }
+
+    public function getAvail()
+    {
+        return $this->hasMany(Availability::className(), ['clinic_id' => 'id']);
+         
     }
 
     public function getSpec()
@@ -55,6 +64,34 @@ class Medical extends \api\components\db\ActiveRecord
     public function getDoctor()
     {
         return $this->hasMany(Availability::className(), ['clinic_id' => 'id']);
+    }
+
+    public function count($model)
+    {
+        $no = Appointment::find()
+                ->where(['clinic_id' => $model->id])
+                ->andWhere(['<=', 'clinic_rate', 5])
+                // ->orWhere(['>=', 'clinic_rate', 1])
+                ->count();
+        if ($no) {
+            return $no;
+        }else{
+            return 0;
+        }
+    }
+
+    public function total($model)
+    {
+        $no = Appointment::find()
+                ->where(['clinic_id' => $model->id])
+                ->andWhere(['<=', 'clinic_rate', 5])
+                // ->orWhere(['>=', 'clinic_rate', 1])
+                ->sum('clinic_rate');
+        if ($no) {
+            return $no;
+        }else{
+            return 0;
+        }
     }
 
     // public static function getPhoto($photo)

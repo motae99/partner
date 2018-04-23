@@ -33,8 +33,12 @@ class AppointmentController extends \api\components\ActiveController
                     'view',
                     'booking',
                     'reserve',
+                    'revisit',
                     'cancel',
-                    'schedule'
+                    'schedule',
+                    'reschedule',
+                    'ratedoctor',
+                    'rateclinic'
                 ],
                 'roles' => ['@'],
             ],
@@ -191,6 +195,59 @@ class AppointmentController extends \api\components\ActiveController
 
     }
 
+    public function actionRatedoctor(){
+        $user =  Yii::$app->user->identity;
+        $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        if (isset($body['appointment_id'])) {
+            $appointment = Appointment::findOne($body['appointment_id']);
+            if (isset($body['doctor_rate']) && ($appointment->status == 'confirmed') && ($appointment->stat == 'done')) {
+                if ($body['doctor_rate'] >= 1 && $body['doctor_rate'] <= 5) {
+                    $appointment->doctor_rate = $body['doctor_rate'];
+                    $appointment->save();
+                    return array('success' => 1, 'message'=>'Rate Saved');
+                }else{
+                    return array('success' => 0, 'message'=>'rate is 1 to 5');
+                }
+                
+            }else{
+                return array('success' => 0, 'message'=>'Rate doctor , after confirming and done');
+            }
+
+
+        }else{
+            return array('success' => 0, 'message'=>'unkown appointment');
+            die();
+        }
+
+    }
+
+    public function actionRateclinic(){
+        $user =  Yii::$app->user->identity;
+        $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
+        if (isset($body['appointment_id'])) {
+            $appointment = Appointment::findOne($body['appointment_id']);
+            if (isset($body['clinic_rate']) && ($appointment->status == 'confirmed') && ($appointment->stat == 'done')) {
+                if ($body['clinic_rate'] >= 1 && $body['clinic_rate'] <= 5) {
+                    $appointment->clinic_rate = $body['clinic_rate'];
+                    $appointment->save();
+                    return array('success' => 1, 'message'=>'Rate Saved');
+                }else{
+                    return array('success' => 0, 'message'=>'rate is 1 to 5');
+                }
+                
+            }else{
+                return array('success' => 0, 'message'=>'Rate clinic, after confirming and done');
+            }
+
+
+        }else{
+            return array('success' => 0, 'message'=>'unkown appointment');
+            die();
+        }
+
+    }
+
+
      public function actionReschedule(){
         $user =  Yii::$app->user->identity;
         $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -220,11 +277,25 @@ class AppointmentController extends \api\components\ActiveController
                     return  array('message' => 'date or time is reserved');
                 }
             }else{
-                return  array('body' => "you cant rescheduled this appointment");
+                return  array('success' => 0, 'message' => "you cant rescheduled this appointment");
             }
         }else{
             return  array('success' => 0, 'message' => 'specify current reservation id and the rescheduled id and your pereferd time id');
         }
+    }
+
+    public function actionRevisit($id){
+        $app = Appointment::findOne($id);
+        if ($app) {
+           if ($app->stat == 'done') {
+                return  array('success' => 0, 'message' => "you cant revisit this appointment");
+           }else{
+                return  array('success' => 0, 'message' => "go see doctor first");
+           }
+        }else{
+                return  array('success' => 0, 'message' => "can't find your appointment");
+           }
+        
     }
 
     public function actionCancel($id){

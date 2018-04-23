@@ -80,7 +80,7 @@ class RegisterController extends \api\components\ActiveController
 
     public function actionCreate(){
         $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
-        if (isset($body['phone_no']) && isset($body['password']) && isset($body['gender']) && isset($body['dob']) && isset($body['name']) {
+        if (isset($body['phone_no']) && isset($body['password']) && isset($body['gender']) && isset($body['dob']) && isset($body['name'])) {
             $user = User::find()->where(['email' => $body['phone_no']])->one();
             if ($user) {
                 return array('success' => 0, 'massege' => 'User is already registered');
