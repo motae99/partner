@@ -16,9 +16,12 @@ class Specialization extends \api\components\db\ActiveRecord
     {
         return [
             'id',
-            'specialty',
+            // 'speciality_id',
             'clinic_id',
             'physician_id',
+            'Speciality' => function($model) { return $model->speciality->name; },
+            // 'clinic' => function($model) { return $model->clinic->name; },
+            // 'Doctor' => function($model) { return $model->doctor->name; },
         ];
     }
 
@@ -42,6 +45,11 @@ class Specialization extends \api\components\db\ActiveRecord
     public function getClinic()
     {
         return $this->hasOne(Medical::className(), ['clinic_id' => 'id']);
+    }
+
+    public function getSpeciality()
+    {
+        return $this->hasOne(Speciality::className(), ['id' => 'specialty_id']);
     }
 }
 

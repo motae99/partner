@@ -33,7 +33,7 @@ class AmbulanceController extends \api\components\ActiveController
         return $actions;
     }
 
-     public function actionCreate(){
+    public function actionCreate(){
         $user =  Yii::$app->user->identity;
         
         $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -44,7 +44,7 @@ class AmbulanceController extends \api\components\ActiveController
             $model->from_location = $body['from'];
             $model->to_location = $body['to'];
             $model->phone_no = $body['phone_no'];
-            $model->requested_by = 1;
+            $model->requested_by = $user->id;
             $model->requested_at = new Expression('NOW()');
             $model->status = 'requested';
             if ($model->save()) {

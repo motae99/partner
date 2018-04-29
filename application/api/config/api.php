@@ -13,13 +13,29 @@ return [
 				'POST /oauth2/<action:\w+>' => 'oauth2/default/<action>',
 				[
 					'class' => 'yii\rest\UrlRule',
-					'controller' => ['v1/medical', 'v1/lab', 'v1/ambulance', 'v1/pharmacy', 'v1/insurance','v1/physicain'],
-					// 'extraPatterns' => [
-					// 	'GET accept/<id>' => 'accept',
-					// 	'GET reject/<id>' => 'reject',
-					// 	'GET only/<id>' => 'only',
-					// 	'GET oname/<id>' => 'oname',
-					// ],
+					'controller' => [
+						'v1/medical', 
+						'v1/lab', 
+						'v1/ambulance', 
+						'v1/pharmacy', 
+						'v1/insurance',
+						'v1/physicain',
+					],
+				],
+				[
+					'class' => 'yii\rest\UrlRule',
+					'controller' => ['v1/ads'],
+					'extraPatterns' => [
+						'GET text' => 'text',
+						'GET img' => 'img',
+					],
+				],
+				[
+					'class' => 'yii\rest\UrlRule',
+					'controller' => ['v1/services'],
+					'extraPatterns' => [
+						'GET types' => 'types',
+					],
 				],	
 				[
 					'class' => 'yii\rest\UrlRule',

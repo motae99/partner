@@ -19,7 +19,7 @@ class Physicain extends \api\components\db\ActiveRecord
             'id',
             'name',
             'contact_no',
-            'spaciality'=> function($model) { return $model->specialization_id; },
+            'spaciality' => function($model) { return $model->spec->name; },
             'regestration_no',
             'university',
             'extra_info',
@@ -40,6 +40,11 @@ class Physicain extends \api\components\db\ActiveRecord
     {
         return $this->hasMany(Availability::className(), ['physician_id' => 'id']);
          
+    }
+
+    public function getSpec()
+    {
+        return $this->hasOne(Speciality::className(), ['id' => 'specialization_id']);
     }
     
     // public function getInsurance()
