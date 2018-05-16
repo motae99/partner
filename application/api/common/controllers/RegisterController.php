@@ -50,8 +50,8 @@ class RegisterController extends \api\components\ActiveController
             }else{
                 $client = new Client();
                 $no = $body['phone_no'];
-                $response = $client->Verify->GetCode($no , 'مرحبا بك في خدمة تطبيق طبيبي لتأكيد الأشتراك الرجاء ادخال الرقم التالي', 'OTP');
-                return array('response' => $response);
+                $response = $client->Verify->GetCode($no , 'لتأكيد الأشتراك الرجاء ادخال الرقم التالي', 'OTP');
+                return array('success' => 1 ,'response' => $response);
             }
         
         }else{

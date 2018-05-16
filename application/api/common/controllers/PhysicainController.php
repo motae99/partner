@@ -15,13 +15,31 @@ class PhysicainController extends \api\components\ActiveController
         return [
             [
                 'allow' => true,
-                'roles' => ['@'],
+                'actions' => [
+                    'index',
+                    'view',
+                    'spaciality'
+                ],
+                'roles' => ['?'],
             ],
            
         ];
     }
 
+    public function actions(){
+        $actions = parent::actions();
+        unset($actions['delete']);
+        unset($actions['create']);
+        unset($actions['update']);
+        return $actions;
+    }
+
     
+    public function actionSpaciality(){
+        $Physicain = Physicain::find()->all();
+        return  array('Physicain' => $Physicain);
+
+    }
 
     // public function actionIndex(){
     //     return new ActiveDataProvider([

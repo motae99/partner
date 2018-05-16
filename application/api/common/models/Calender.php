@@ -36,6 +36,7 @@ class Calender extends \api\components\db\ActiveRecord
 
     public function getSchedule()
     {
+        // $all = $this->hasMany(Schedule::className(), ['calender_id' => 'id']);
         return $this->hasMany(Schedule::className(), ['calender_id' => 'id']);
     }
 

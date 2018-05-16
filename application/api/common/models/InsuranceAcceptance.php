@@ -11,13 +11,14 @@ class InsuranceAcceptance extends \api\components\db\ActiveRecord
 	public static function tableName()
 	{
 		return '{{insurance_acceptance}}';
-	}
+	} 
 	public function fields()
     {
         return [
             'insurance_id',
             'physician_id',
             'clinic_id',
+            'doctor'=> function($model) { return $model->doctor->name; },
             'medical'=> function($model) { return $model->clinic->name; },
             'group'=> function($model) { return $model->clinic->type; },
             'insurance_provider'=> function($model) { return $model->provider->name; },

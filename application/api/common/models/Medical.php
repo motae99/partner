@@ -43,17 +43,19 @@ class Medical extends \api\components\db\ActiveRecord
     public function extraFields() {
         return [
             'specialization' => function($model) { return $model->spec; },
-            'doctors' => function($model) { return $model->doctor; },
+            // 'doctors' => function($model) { return $model->doctor; },
             'insurance' => function($model) { return $model->avail; },
 
             // 'items' => function($model) { return $model->item; }
         ];
     }
 
+
+
     public function getAvail()
     {
+        
         return $this->hasMany(Availability::className(), ['clinic_id' => 'id']);
-         
     }
 
     public function getSpec()

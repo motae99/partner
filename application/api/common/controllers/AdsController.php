@@ -28,7 +28,7 @@ class AdsController extends \api\components\ActiveController
 
     public function actions(){
         $actions = parent::actions();
-        // unset($actions['index']);
+        unset($actions['index']);
         unset($actions['view']);
         unset($actions['create']);
         unset($actions['update']);
@@ -36,11 +36,11 @@ class AdsController extends \api\components\ActiveController
         return $actions;
     }
 
-    // public function actionText(){
-    //     $ads = Ads::find()->where(['img' => ""])->all();
-    //     return array('success' => 1, 'data'=>$ads);
+    public function actionIndex(){
+        $ads = Ads::find()->all();
+        return array('ads'=>$ads);
 
-    // }
+    }
 
     
 

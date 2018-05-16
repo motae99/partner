@@ -16,8 +16,10 @@ class Labinsurance extends \api\components\db\ActiveRecord
     public function fields()
     {
         return [
-            'id' => function($model) { return $model->insurance_id; },
-            'name' => function($model) { return $model->insu->name; },
+            'id',
+            'lab_id',
+            'provider_name' => function($model) { return $model->insu->name; },
+            'lab_name' => function($model) { return $model->lab->name; },
             'discount',
         ];
     }
@@ -25,6 +27,11 @@ class Labinsurance extends \api\components\db\ActiveRecord
     public function getInsu()
     {
         return $this->hasOne(Insurance::className(), ['id' => 'insurance_id']);
+    }
+
+    public function getLab()
+    {
+        return $this->hasOne(Lab::className(), ['id' => 'lab_id']);
     }
 
     public static function find() {

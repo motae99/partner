@@ -19,7 +19,20 @@ return [
 						'v1/ambulance', 
 						'v1/pharmacy', 
 						'v1/insurance',
-						'v1/physicain',
+					],
+				],
+				[
+					'class' => 'yii\rest\UrlRule',
+					'controller' => ['v1/physicain'],
+					'extraPatterns' => [
+						'GET spaciality' => 'spaciality',
+					],
+				],
+				[
+					'class' => 'yii\rest\UrlRule',
+					'controller' => ['v1/contactus'],
+					'extraPatterns' => [
+						'POST form' => 'form',
 					],
 				],
 				[
@@ -50,6 +63,10 @@ return [
 						'POST reschedule' => 'reschedule',
 						'POST ratedoctor' => 'ratedoctor',
 						'POST rateclinic' => 'rateclinic',
+						'GET calenderavailable/<id>' => 'calenderavailable',
+						'GET scheduleavailable/<id>' => 'scheduleavailable',
+						'GET insurance' => 'insurance',
+
 					],
 				],
 				[

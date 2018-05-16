@@ -38,7 +38,10 @@ class AppointmentController extends \api\components\ActiveController
                     'schedule',
                     'reschedule',
                     'ratedoctor',
-                    'rateclinic'
+                    'rateclinic',
+                    'scheduleavailable',
+                    'calenderavailable',
+                    'insurance'
                 ],
                 'roles' => ['@'],
             ],
@@ -53,6 +56,12 @@ class AppointmentController extends \api\components\ActiveController
         return $actions;
     }
 
+    public function actionInsurance($clinic_id, $doctor_id){
+        $avail = Availability::find()->where(['clinic_id' => $clinic_id, 'physician_id' => $doctor_id])->one();
+        $accepted = $avail->insurance;
+        return  array('accepted_insurance' => $accepted );
+    }
+
     public function actionBooking(){
         $user =  Yii::$app->user->identity;
         $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);
@@ -64,7 +73,7 @@ class AppointmentController extends \api\components\ActiveController
             $phone_no = $body['phone_no'];
             
         }else{
-            return  array('message' => 'fill required fields'); 
+            return  array('message' => 'رجاءً أكمل الادخال'); 
 
         }
         if (isset($body['insurance_id']) && isset($body['insurance_no']) ) {
@@ -100,8 +109,8 @@ class AppointmentController extends \api\components\ActiveController
             $cal = Calender::find()
                 ->where(['clinic_id' => $clinic_id])
                 ->andWhere(['physician_id' => $doctor_id])
-                // ->andWhere(['status' => 'available'])
-                // ->andWhere(['>=', 'date', date('Y-m-d')])
+                ->andWhere(['status' => 'available'])
+                ->andWhere(['>=', 'date', date('Y-m-d')])
                 ->orderBy(['date' => SORT_ASC])
                 ->one();
 
@@ -111,7 +120,7 @@ class AppointmentController extends \api\components\ActiveController
                             ->andWhere(['patient_id' => $patient->id])
                             ->one();
                 if ($already) {
-                     return  array('success' => 0 , 'message' => 'already booked'); 
+                     return  array('success' => 0 , 'message' => 'محجوز مسبقاً'); 
                 }
                 $availability = Availability::findOne($cal->availability_id);
             // return  array('data' => $availability); 
@@ -146,7 +155,7 @@ class AppointmentController extends \api\components\ActiveController
                     
                     }else{
                         // message your insurance is not available
-                      return  array('success' => 0 , 'message' => 'message your insurance is not supported'); 
+                      return  array('success' => 0 , 'message' => 'تأمينك غير مدعوم'); 
                     }
 
                 }elseif($availability){
@@ -172,7 +181,7 @@ class AppointmentController extends \api\components\ActiveController
                 }
             }else{
                 // no appointment available to book  
-                return  array('success' => 0 , 'message' => 'no appointment available to book'); 
+                return  array('success' => 0 , 'message' => 'ﻻ توجد حجوزات شاغره'); 
             }
         }
         
@@ -284,6 +293,8 @@ class AppointmentController extends \api\components\ActiveController
         }
     }
 
+
+
     public function actionRevisit($id){
         $app = Appointment::findOne($id);
         if ($app) {
@@ -341,11 +352,40 @@ class AppointmentController extends \api\components\ActiveController
 
     }
 
-    public function actionSchedule($id){
+    // public function actionSchedule($id){
+    //     $app = Appointment::findOne($id);
+    //     $cal = Calender::find()->where(['id' => $app->calender_id])->one();
+    //     $times = $cal->schedule ;    
+    //     return  array('Calender' => $cal, 'Schedule' => $times);
+
+    // }
+
+    public function actionCalenderavailable($id){
         $app = Appointment::findOne($id);
-        $cal = Calender::find()->where(['id' => $app->calender_id])->one();
-        $times = $cal->schedule ;    
-        return  array('Calender' => $cal, 'Schedule' => $times);
+        $ava = Availability::find()->where(['id' => $app->availability_id])->one();
+        $cal = Calender::find()->where(['availability_id' => $ava->id])->all();
+        // if ($cal) {
+        //     return  array('Calender' => $cal);
+        // }else{
+        //     return  array('Calender' => 0);
+        // }
+        return  array('Calender' => $cal);
+
+    }
+
+    public function actionScheduleavailable($id){
+        // $cal = Calender::findOne($id);
+        $schedule = Schedule::find()->where(['calender_id' => $id, 'status' => 'available'])->all();
+        // if ($cal) {
+        //     foreach ($cal as $c) {
+        //         $time = $c->schedule;
+        //         // if ($time->status == 'available') {
+        //             $times[] = $time ; 
+        //         // }
+        //     }
+        // }
+        // $time = $cal->schedule ;
+        return  array('Schedule' => $schedule);
 
     }
 
@@ -384,7 +424,7 @@ class AppointmentController extends \api\components\ActiveController
 
 
     // public function actionCreate(){
-    //     $user =  Yii::$app->user->identity;
+    //     $user =  Yii::$app->user->identity; 
         
     //     $model = new Task();
     //     $body = json_decode(Yii::$app->getRequest()->getRawBody(), true);

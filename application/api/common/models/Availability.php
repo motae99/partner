@@ -20,6 +20,8 @@ class Availability extends \api\components\db\ActiveRecord
             'clinic_id',
             'doctor' => function($model) { return $model->doctor->name; },
             'clinic' => function($model) { return $model->clinic->name; },
+            // 'specialization' => function($model) { return $model->spec->specialty_id; },
+            'specialization' => function($model) { return $model->spec($model); },
             'day' => function($model) { return $model->date; },
             'from_time',
             'to_time',
@@ -49,7 +51,19 @@ class Availability extends \api\components\db\ActiveRecord
     public function getInsurance()
     {
         
-        return $this->hasMany(InsuranceAcceptance::className(), ['id' => 'insurance_id']);
+        return $this->hasMany(InsuranceAcceptance::className(), ['availability_id' => 'id']);
+    }
+
+    public function spec($model)
+    {
+        $specialization = Specialization::find()
+                ->where(['clinic_id' => $model->clinic_id])
+                ->andWhere(['physician_id' => $model->physician_id])->one();
+        if ($specialization) {
+            return $specialization->speciality->name;;
+        }else{
+            return 0;
+        }
     }
 
 	public static function find() {

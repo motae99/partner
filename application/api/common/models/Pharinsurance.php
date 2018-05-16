@@ -16,8 +16,10 @@ class Pharinsurance extends \api\components\db\ActiveRecord
     public function fields()
     {
         return [
-            'id' => function($model) { return $model->insurance_id; },
-            'name' => function($model) { return $model->insu->name; },
+            'id' ,
+            'phar_id',
+            'provider_name' => function($model) { return $model->insu->name; },
+            'pharmacy_name' => function($model) { return $model->pharmacy->name; },
             'discount',
         ];
     }
@@ -25,6 +27,11 @@ class Pharinsurance extends \api\components\db\ActiveRecord
     public function getInsu()
     {
         return $this->hasOne(Insurance::className(), ['id' => 'insurance_id']);
+    }
+
+    public function getPharmacy()
+    {
+        return $this->hasOne(Pharmacy::className(), ['id' => 'phar_id']);
     }
 
     public static function find() {

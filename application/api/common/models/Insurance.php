@@ -17,19 +17,31 @@ class Insurance extends \api\components\db\ActiveRecord
     {
         return [
             'id',
-            'name',
+            'name', 
         ];
     }
 
     public function extraFields() {
         return [
-            'services' => function($model) { return $model->acceptance; },
+            'physicians' => function($model) { return $model->acceptance; },
+            'pharmacies' => function($model) { return $model->phar; },
+            'labs' => function($model) { return $model->lab; },
         ];
     }
 
     public function getAcceptance()
     {
-        return $this->hasOne(InsuranceAcceptance::className(), ['insurance_id' => 'id']);
+        return $this->hasMany(InsuranceAcceptance::className(), ['insurance_id' => 'id']);
+    }
+
+    public function getPhar()
+    {
+        return $this->hasMany(Pharinsurance::className(), ['insurance_id' => 'id']);
+    }
+
+    public function getLab()
+    {
+        return $this->hasMany(Labinsurance::className(), ['insurance_id' => 'id']);
     }
 
 
